@@ -55,3 +55,7 @@ switch ($action) {
 # SHOW FINAL STATUS
 Write-Host "`nCurrent status port 5173:"
 Check-PortStatus
+
+
+#тут что нибудь напишу такое страшное и странное и закоммичу в мастер
+#каков негодник!
