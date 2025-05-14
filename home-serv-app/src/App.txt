@@ -1,0 +1,128 @@
+import React, { useState, useRef } from 'react';
+import Notes from './components/Notes/Notes';
+import useNotes from './components/Notes/useNotes';
+import Tasks from './components/Tasks/Tasks';
+import useTasks from './components/Tasks/useTasks';
+import Timer from './components/Timer/Timer';
+import useTimer from './components/Timer/useTimer';
+import Weather from './components/Weather/Weather';
+import useWeather from './components/Weather/useWeather';
+import AudioPlayer from './components/AudioPlayer/AudioPlayer';
+import useAudioPlayer from './components/AudioPlayer/useAudioPlayer';
+import { formatTime } from './utils/formatTime';
+
+function App() {
+  const { notes, newNote, setNewNote, addNote, deleteNote } = useNotes();
+  const { tasks, newTask, setNewTask, addTask, toggleTask, deleteTask } = useTasks();
+  const { hours, minutes, seconds, timeLeft, isActive, isPaused, setHours, setMinutes, setSeconds, handleStartPause, handleResetTimer } = useTimer();
+  const { weather, loading, fetchWeather } = useWeather();
+  const { sounds, toggleSound, setVolume, toggleAllSounds } = useAudioPlayer();
+
+  // Размеры окон
+  const [noteSize, setNoteSize] = useState({ width: 300, height: 400 });
+  const [taskSize, setTaskSize] = useState({ width: 300, height: 400 });
+
+  const startResizingNote = (e) => {
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const startWidth = noteSize.width;
+    const startHeight = noteSize.height;
+
+    const handleMouseMove = (moveEvent) => {
+      const dx = moveEvent.clientX - startX;
+      const dy = moveEvent.clientY - startY;
+      setNoteSize({
+        width: Math.max(200, startWidth - dx),
+        height: Math.max(200, startHeight + dy),
+      });
+    };
+
+    const stopResizing = () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', stopResizing);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', stopResizing);
+  };
+
+  const startResizingTask = (e) => {
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const startWidth = taskSize.width;
+    const startHeight = taskSize.height;
+
+    const handleMouseMove = (moveEvent) => {
+      const dx = moveEvent.clientX - startX;
+      const dy = moveEvent.clientY - startY;
+      setTaskSize({
+        width: Math.max(200, startWidth + dx),
+        height: Math.max(200, startHeight + dy),
+      });
+    };
+
+    const stopResizing = () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', stopResizing);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', stopResizing);
+  };
+
+  return (
+    <div className="relative h-screen w-full overflow-hidden font-sans bg-gray-900 text-white">
+      {/* Фон */}
+      <div
+        className="absolute inset-0 bg-cover bg-center transition-all duration-700 ease-in-out"
+        style={{
+          backgroundImage: 'linear-gradient(45deg, #1a1a2e, #16213e, #0f3460)',
+        }}
+      />
+      <div className="absolute inset-0 bg-black opacity-50"></div>
+
+      {/* Компоненты */}
+      <Notes
+        notes={notes}
+        newNote={newNote}
+        setNewNote={setNewNote}
+        addNote={addNote}
+        deleteNote={deleteNote}
+        noteSize={noteSize}
+        startResizingNote={startResizingNote}
+      />
+
+      <Tasks
+        tasks={tasks}
+        newTask={newTask}
+        setNewTask={setNewTask}
+        addTask={addTask}
+        toggleTask={toggleTask}
+        deleteTask={deleteTask}
+        taskSize={taskSize}
+        startResizingTask={startResizingTask}
+      />
+
+      <Timer
+        hours={hours}
+        minutes={minutes}
+        seconds={seconds}
+        timeLeft={timeLeft}
+        isActive={isActive}
+        isPaused={isPaused}
+        setHours={setHours}
+        setMinutes={setMinutes}
+        setSeconds={setSeconds}
+        handleStartPause={handleStartPause}
+        handleResetTimer={handleResetTimer}
+        formatTime={formatTime}
+      />
+
+      <Weather weather={weather} loading={loading} fetchWeather={fetchWeather} getWeatherIcon={getWeatherIcon} />
+
+      <AudioPlayer sounds={sounds} toggleSound={toggleSound} setVolume={setVolume} toggleAllSounds={toggleAllSounds} />
+    </div>
+  );
+}
+
+export default App;
