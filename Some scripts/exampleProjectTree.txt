@@ -1,0 +1,33 @@
+#Структура файлов и папок для скриптa createProjectTree.ps1
+
+project/
+├── client/                    
+│   ├── public/                
+│   ├── src/
+│   │   ├── assets/            
+│   │   ├── components/        
+│   │   ├── contexts/          
+│   │   ├── hooks/             
+│   │   ├── pages/             
+│   │   │   ├── Auth/          
+│   │   │   │   ├── Login.tsx  
+│   │   │   │   └── styles.css 
+│   │   │   └── Home/          
+│   │   ├── styles/
+│   │   │   ├── globals.css    
+│   │   │   └── themes/        
+│   │   ├── App.tsx            
+│   │   ├── main.tsx           
+│   │   └── vite-env.d.ts      
+│   ├── tailwind.config.js     
+│   ├── postcss.config.js      
+│   └── tsconfig.json          
+│
+├── server/                    
+│   ├── config/                
+│   ├── models/                
+│   ├── routes/                
+│   └── server.ts              
+│
+├── .env                       
+└── README.md                  
