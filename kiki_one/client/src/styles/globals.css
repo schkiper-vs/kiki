@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: #3b82f6; /* Синий (светлая тема) */
+}
+.dark-green {
+  --color-primary: #10b981; /* Зелёный (тёмная тема) */
+}
