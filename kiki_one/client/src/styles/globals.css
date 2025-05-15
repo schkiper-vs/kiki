@@ -8,3 +8,11 @@
 .dark-green {
   --color-primary: #10b981; /* Зелёный (тёмная тема) */
 }
+
+body {
+  @apply bg-gray-100;
+  background-image: var(--body-bg-image);
+  background-size: cover;
+  background-attachment: fixed;
+  transition: background-image 0.3s ease;
+}
