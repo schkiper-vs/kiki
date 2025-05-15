@@ -8,17 +8,17 @@ export const Layout = () => {
 
   return (
     <>
-      <header className="bg-blue-600 p-4 text-white">
+      <header className="header-style p-4 text-white fixed w-full z-10">
         <nav className="container mx-auto flex justify-between items-center">
-          <Link to="/" className="text-xl font-bold">Моё Приложение</Link>
+          <Link to="/" className="text-xl font-bold theme-text">Моё Приложение</Link>
           <div className="flex gap-4 items-center">
-            <Link to="/" className="hover:underline">Главная</Link>
-            <Link to="/auth" className="hover:underline">Вход</Link>
+            <Link to="/" className="hover:underline theme-text">Главная</Link>
+            <Link to="/auth" className="hhover:underline theme-text">Вход</Link>
             
             {/* Кнопка настроек */}
             <button 
               onClick={() => setIsSettingsOpen(!isSettingsOpen)}
-              className="p-2 hover:bg-blue-700 rounded-full transition"
+              className="p-2 hover:bg-opacity-30 rounded-full transition theme-text"
               aria-label="Настройки"
             >
               ⚙️
@@ -32,7 +32,7 @@ export const Layout = () => {
         <SettingsMenu onClose={() => setIsSettingsOpen(false)} />
       )}
 
-      <main className="container mx-auto p-4">
+      <main className="container mx-auto pt-20 pb-4 px-4">
         <Outlet />
       </main>
     </>

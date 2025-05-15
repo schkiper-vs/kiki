@@ -3,16 +3,21 @@
 @tailwind utilities;
 
 :root {
-  --color-primary: #3b82f6; /* Синий (светлая тема) */
-}
-.dark-green {
-  --color-primary: #10b981; /* Зелёный (тёмная тема) */
+  --header-opacity: 0.5;
 }
 
 body {
   @apply bg-gray-100;
-  background-image: var(--body-bg-image);
   background-size: cover;
+  background-position: center;
   background-attachment: fixed;
   transition: background-image 0.3s ease;
+}
+
+.header-style {
+  background-color: rgba(var(--theme-color), var(--header-opacity));
+}
+
+.theme-text {
+  color: color-mix(in srgb, var(--theme-color), white 40%);
 }
