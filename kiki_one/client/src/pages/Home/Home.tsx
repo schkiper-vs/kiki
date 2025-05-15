@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 
 export const Home = () => {
   return (
-    <div className="bg-gray-100 min-h-screen p-8">
-      <h1 className="text-3xl font-bold text-blue-600 mb-6">Добро пожаловать!</h1>
+    <div className="bg-gray-100  p-8">
+      <h1 className="text-3xl font-bold text-blue-600 mb-6 ">Добро пожаловать!</h1>
       <p className="mb-4">Это главная страница вашего приложения.</p>
       <Link 
         to="/auth" 
