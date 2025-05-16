@@ -11,7 +11,7 @@ interface Note {
 const Notes = () => {
   const [notes, setNotes] = useState<Note[]>([]);
   const [inputValue, setInputValue] = useState('');
-  const [position, setPosition] = useState({ x: 1000, y: 90 });
+  const [position, setPosition] = useState({ x: window.innerWidth - 320, y: 90 });
   const [size, setSize] = useState({ width: 300, height: 300 });
   const [isLoaded, setIsLoaded] = useState(false);
   const dragRef = useRef<HTMLDivElement>(null);
