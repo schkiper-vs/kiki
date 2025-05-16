@@ -1,72 +1,68 @@
-// src/components/TodoList.tsx
+// src/components/Notes.tsx
 import React, { useState, useEffect, useRef } from 'react';
 import { saveToDB, loadFromDB } from '../utils/indexedDB';
 import type { Position, Size } from '../types';
 
-interface Todo {
+interface Note {
   id: string;
   text: string;
-  completed: boolean;
 }
 
-const TodoList = () => {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [todos, setTodos] = useState<Todo[]>([]);
+const Notes = () => {
+  const [notes, setNotes] = useState<Note[]>([]);
   const [inputValue, setInputValue] = useState('');
-  const [position, setPosition] = useState({ x: 20, y: 90 });
+  const [position, setPosition] = useState({ x: 1000, y: 90 });
   const [size, setSize] = useState({ width: 300, height: 300 });
+  const [isLoaded, setIsLoaded] = useState(false);
   const dragRef = useRef<HTMLDivElement>(null);
   const resizeRef = useRef<HTMLDivElement>(null);
 
   // Загружаем из IndexedDB при монтировании
   useEffect(() => {
-  const load = async () => {
-    const saved = await loadFromDB<{ todos: Todo[], position: Position, size: Size }>('todoList');
-    if (saved) {
-      setTodos(saved.todos || []);
-      setPosition(saved.position || { x: 50, y: 50 });
-      setSize(saved.size || { width: 300, height: 300 });
-    }
-    setIsLoaded(true); // ✅ Данные загружены
-  };
-  load();
+    const load = async () => {
+      const saved = await loadFromDB<{ notes: Note[], position: Position, size: Size }>('notes');
+      if (saved) {
+        setNotes(saved.notes || []);
+        setPosition(saved.position || { x: 400, y: 50 });
+        setSize(saved.size || { width: 300, height: 300 });
+      }
+      setIsLoaded(true);
+    };
+    load();
   }, []);
 
-  // Сохраняем при изменении todos / position / size
+  // Сохраняем при изменении notes / position / size
   useEffect(() => {
-  if (!isLoaded) return; // ⛔ Не сохраняем, пока не загружены данные
+    if (!isLoaded) return;
 
-  const save = async () => {
-    await saveToDB('todoList', {
-      todos,
-      position,
-      size,
-    });
-  };
-  save();
-}, [todos, position, size, isLoaded]);
+    const save = async () => {
+      await saveToDB('notes', {
+        notes,
+        position,
+        size,
+      });
+    };
+    save();
+  }, [notes, position, size, isLoaded]);
 
-  const handleAddTodo = () => {
+  const handleAddNote = () => {
     if (!inputValue.trim()) return;
-    const newTodo: Todo = {
+    const newNote: Note = {
       id: Date.now().toString(),
       text: inputValue,
-      completed: false,
     };
-    setTodos([...todos, newTodo]);
+    setNotes([...notes, newNote]);
     setInputValue('');
   };
 
-  const toggleComplete = (id: string) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
-      )
-    );
+  const deleteNote = (id: string) => {
+    setNotes(notes.filter((note) => note.id !== id));
   };
 
-  const deleteTodo = (id: string) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
+  const copyNoteText = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      alert('Текст скопирован!');
+    });
   };
 
   // Drag handler
@@ -116,13 +112,13 @@ const TodoList = () => {
     };
 
     document.addEventListener('mousemove', onMove);
-      document.addEventListener('mouseup', stopResizing);
+    document.addEventListener('mouseup', stopResizing);
   };
 
   return (
     <div
-      className="absolute bg-gray-800 bg-opacity-50 backdrop-blur-md rounded-xl p-4 overflow-auto"
-      //absolute bg-grey/30 backdrop-blur-sm border-gray-300 rounded shadow-lg  -- было
+      className="absolute top-24 right-4 z-20 bg-gray-800 bg-opacity-50 backdrop-blur-md rounded-xl p-4 overflow-auto"
+      //className="absolute bg-white/30 backdrop-blur-sm rounded shadow-lg"
       //absolute top-24 right-4 z-20 bg-gray-800 bg-opacity-50 backdrop-blur-md rounded-xl p-4 overflow-auto
       style={{
         left: `${position.x}px`,
@@ -137,21 +133,21 @@ const TodoList = () => {
         className="bg-black/20 px-4 py-2 cursor-move rounded-t flex justify-between items-center"
         onMouseDown={startDragging}
       >
-        <h3 className="font-semibold">Список дел</h3>
+        <h3 className="font-semibold">Заметки</h3>
       </div>
 
-      {/* Список */}
-      <div className="p-3 overflow-auto h-full max-h-[calc(100%-40px)]" style={{ maxHeight: 'calc(100% - 40px)' }}>
+      {/* Список заметок */}
+      <div className="p-3 overflow-auto h-full max-h-[calc(100%-40px)]">
         <div className="flex gap-2 mb-3">
           <textarea
             className="flex-1 p-2 border border-gray-300 rounded outline-none resize-none"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Добавить задачу"
+            placeholder="Добавить заметку"
             rows={2}
           />
           <button
-            onClick={handleAddTodo}
+            onClick={handleAddNote}
             className="px-3 bg-green-500 text-white rounded hover:bg-green-600"
           >
             +
@@ -159,26 +155,30 @@ const TodoList = () => {
         </div>
 
         <ul className="space-y-2">
-          {todos.map((todo) => (
-            <li key={todo.id} className="flex items-center gap-2 p-2 border-gray-300 rounded bg-white/20 break-words whitespace-pre-wrap">
-              <input
-                type="checkbox"
-                checked={todo.completed}
-                onChange={() => toggleComplete(todo.id)}
-                className="cursor-pointer"
-              />
-              <span
-                className={`flex-1 ${todo.completed ? 'line-through text-gray-500' : ''}`}
-                style={{ whiteSpace: 'pre-wrap' }} //✅ Переносы строк будут отображаться
+          {notes.map((note) => (
+            <li key={note.id} className="relative group">
+              <div
+                className="p-2 border-gray-300 rounded bg-white/20 break-words whitespace-pre-wrap"
+                style={{ wordBreak: 'break-word' }}
               >
-                {todo.text}
-              </span>
-              <button
-                onClick={() => deleteTodo(todo.id)}
-                className="text-red-500 hover:text-red-700"
-              >
-                &times;
-              </button>
+                {note.text}
+              </div>
+              <div className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 flex gap-1">
+                <button
+                  onClick={() => copyNoteText(note.text)}
+                  className="text-blue-500 hover:text-blue-700 text-xs"
+                  title="Копировать"
+                >
+                  📋
+                </button>
+                <button
+                  onClick={() => deleteNote(note.id)}
+                  className="text-red-500 hover:text-red-700 text-xs"
+                  title="Удалить"
+                >
+                  &times;
+                </button>
+              </div>
             </li>
           ))}
         </ul>
@@ -194,4 +194,4 @@ const TodoList = () => {
   );
 };
 
-export default TodoList;
+export default Notes;

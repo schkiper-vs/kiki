@@ -3,6 +3,7 @@ import  { useState, useEffect } from 'react';
 import Header from './components/Header';
 import { loadFromDB } from './utils/indexedDB';
 import TodoList from './components/TodoList';
+import Notes from './components/Notes';
 
 const App = () => {
   const [background, setBackground] = useState<string | null>(null);
@@ -39,12 +40,14 @@ const App = () => {
       />
 
       {/* Центральный текст */}
-      <p className="absolute top-1/2 left-1/2
-                     text-white text-xl font-medium bg-black/30 px-4 py-2 rounded-lg backdrop-blur-sm z-10">
-        Пустой макет. Инструменты будут добавлены позже.
+      <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-xl font-medium bg-black/30 px-4 py-2 rounded-lg backdrop-blur-sm z-10">
+        Инструменты будут добавлены позже.
       </p>
       {/* Список дел */}
         <TodoList />
+      {/* Заметки */}
+      <Notes />
+
     </div>
   );
 };
